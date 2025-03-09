@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Google News</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; color: #333; }
+        .news-container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); }
+        .news-item { margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #ddd; }
+        .news-item a { text-decoration: none; color: #007bff; font-weight: bold; }
+        .news-item a:hover { text-decoration: underline; }
+        .published { font-size: 12px; color: #666; }
+    </style>
+    <script>
+        async function fetchNews() {
+            const response = await fetch('/get_news/');
+            const newsData = await response.json();
+            const newsContainer = document.getElementById("news");
+            newsContainer.innerHTML = ""; // Clear old news
+
+            newsData.forEach((news, index) => {
+                const newsItem = `
+                    <div class="news-item">
+                        <a href="${news.link}" target="_blank">${index + 1}. ${news.title}</a>
+                        <div class="published">Published: ${news.published}</div>
+                    </div>
+                `;
+                newsContainer.innerHTML += newsItem;
+            });
+        }
+
+        // Fetch news every 30 seconds
+        setInterval(fetchNews, 30000);
+
+        // Load news when page loads
+        window.onload = fetchNews;
+    </script>
+</head>
+<body>
+    <h1>Real-Time Google News</h1>
+    <div class="news-container" id="news">
+        <p>Loading news...</p>
+    </div>
+</body>
+</html>
